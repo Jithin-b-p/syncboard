@@ -29,12 +29,10 @@
     "esModuleInterop": true,
 
     "incremental": true,
-
-    "baseUrl": ".",
     "paths": {
-      "@web/*": ["apps/web/src/*"],
-      "@api/*": ["apps/api/src/*"],
-      "@shared/*": ["packages/*"]
+      "@web/*": ["./apps/web/src/*"],
+      "@api/*": ["./apps/api/src/*"],
+      "@shared/*": ["./packages/*"]
     }
   }
 }
