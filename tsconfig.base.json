@@ -3,7 +3,6 @@
     "target": "ES2022",
     "lib": ["ES2022"],
     "module": "CommonJS",
-    "moduleResolution": "Node",
 
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
@@ -28,7 +27,7 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
 
-    "incremental": true,
+    "incremental": false,
     "paths": {
       "@web/*": ["./apps/web/src/*"],
       "@api/*": ["./apps/api/src/*"],

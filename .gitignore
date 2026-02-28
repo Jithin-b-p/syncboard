@@ -18,6 +18,8 @@ coverage/
 docker-compose.override.yml
 *.log
 
+*.tsbuildinfo
+
 mongo_data/
 redis_data/
 
