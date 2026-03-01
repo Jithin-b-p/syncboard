@@ -10,7 +10,8 @@
     "lint": "eslint \"apps/**/*.{ts,tsx}\" --max-warnings=0",
     "lint:fix": "eslint \"apps/**/*.{ts,tsx}\" --fix",
     "typecheck": "tsc --build",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "prepare": "husky"
   },
   "keywords": [],
   "author": "",
@@ -21,8 +22,16 @@
     "@types/node": "^25.3.2",
     "eslint": "^10.0.2",
     "eslint-config-prettier": "^10.1.8",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.3.1",
     "prettier": "^3.8.1",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.56.1"
+  },
+  "lint-staged": {
+    "apps/**/*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   }
 }
