@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { rendererBoard } from '../app/engine/rendering/canvasRenderer';
 
 export default function Canvas() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -26,6 +27,8 @@ export default function Canvas() {
       canvas.style.height = `${rec.height}px`;
 
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      rendererBoard(ctx, { width: rec.width, height: rec.height });
     };
 
     canvasResize();
