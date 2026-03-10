@@ -7,7 +7,7 @@ export interface BoardState {
   width: number;
   height: number;
   elements: BoardElement[];
-  selectedElementId?: string;
+  selectedElementId: string | null;
 }
 
 export function renderBoard(ctx: CanvasRenderingContext2D, state: BoardState) {
