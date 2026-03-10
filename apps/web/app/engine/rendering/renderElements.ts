@@ -1,11 +1,18 @@
-import { RectangleElement } from '../models/element.types';
+import { BoardElement } from '../models/element.types';
 
-export function renderElements(ctx: CanvasRenderingContext2D, elements: RectangleElement[]) {
+export function renderElements(ctx: CanvasRenderingContext2D, elements: BoardElement[]) {
   elements.forEach((el) => {
-    if (el.type === 'rectangle') {
-      ctx.strokeStyle = 'black';
-
-      ctx.strokeRect(el.x, el.y, el.width, el.height);
+    switch (el.type) {
+      case 'rectangle':
+        renderRectangle(ctx, el);
+        break;
     }
   });
+}
+
+export function renderRectangle(ctx: CanvasRenderingContext2D, element: BoardElement) {
+  if (element.type !== 'rectangle') return;
+
+  ctx.fillStyle = '#2563eb';
+  ctx.fillRect(element.x, element.y, element.width, element.height);
 }
