@@ -2,9 +2,11 @@
 
 import { useEffect, useRef } from 'react';
 import { rendererBoard } from '../app/engine/rendering/canvasRenderer';
+import { useBoardStore } from '../app/engine/store/board.store';
 
 export default function Canvas() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const elements = useBoardStore((state) => state.elements);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -28,7 +30,7 @@ export default function Canvas() {
 
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      rendererBoard(ctx, { width: rec.width, height: rec.height });
+      rendererBoard(ctx, { width: rec.width, height: rec.height, elements });
     };
 
     canvasResize();
@@ -36,7 +38,7 @@ export default function Canvas() {
     window.addEventListener('resize', canvasResize);
 
     return () => window.removeEventListener('resize', canvasResize);
-  });
+  }, [elements]);
   return (
     <div className="absolute inset-0">
       <canvas ref={canvasRef} className="w-full h-full block cursor-crosshair" />
