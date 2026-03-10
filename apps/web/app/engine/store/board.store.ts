@@ -1,13 +1,6 @@
 import { create } from 'zustand';
+import { BoardElement } from '../models/element.types';
 
-export interface BoardElement {
-  id: string;
-  type: 'rectangle';
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-}
 export interface BoardState {
   elements: BoardElement[];
   addElement: (element: BoardElement) => void;
