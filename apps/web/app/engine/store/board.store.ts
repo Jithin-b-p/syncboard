@@ -8,7 +8,18 @@ export interface BoardState {
   deleteElement: (id: string) => void;
 }
 export const useBoardStore = create<BoardState>((set) => ({
-  elements: [],
+  elements: [
+    {
+      id: '1',
+      type: 'rectangle',
+      x: 200,
+      y: 200,
+      width: 200,
+      height: 120,
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+    },
+  ],
   addElement: (element) => set((state) => ({ elements: [...state.elements, element] })),
   updateElement: (id, updates) =>
     set((state) => ({
