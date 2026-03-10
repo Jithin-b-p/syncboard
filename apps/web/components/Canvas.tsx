@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { rendererBoard } from '../app/engine/rendering/canvasRenderer';
+import { renderBoard } from '../app/engine/rendering/canvasRenderer';
 import { useBoardStore } from '../app/engine/store/board.store';
 import {
   handlePointerDown,
@@ -35,7 +35,7 @@ export default function Canvas() {
 
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      rendererBoard(ctx, { width: rec.width, height: rec.height, elements });
+      renderBoard(ctx, { width: rec.width, height: rec.height, elements });
     };
 
     canvasResize();
