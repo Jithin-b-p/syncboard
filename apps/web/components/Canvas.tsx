@@ -3,6 +3,11 @@
 import { useEffect, useRef } from 'react';
 import { rendererBoard } from '../app/engine/rendering/canvasRenderer';
 import { useBoardStore } from '../app/engine/store/board.store';
+import {
+  handlePointerDown,
+  handlePointerMove,
+  handlePointerUp,
+} from '../app/engine/interactions/pointerHandlers';
 
 export default function Canvas() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -41,7 +46,25 @@ export default function Canvas() {
   }, [elements]);
   return (
     <div className="absolute inset-0">
-      <canvas ref={canvasRef} className="w-full h-full block cursor-crosshair" />
+      <canvas
+        ref={canvasRef}
+        className="w-full h-full block cursor-crosshair"
+        onPointerDown={(e) => {
+          const canvas = canvasRef.current;
+          if (!canvas) return;
+          handlePointerDown(canvas, e.nativeEvent);
+        }}
+        onPointerMove={(e) => {
+          const canvas = canvasRef.current;
+          if (!canvas) return;
+          handlePointerMove(canvas, e.nativeEvent);
+        }}
+        onPointerUp={(e) => {
+          const canvas = canvasRef.current;
+          if (!canvas) return;
+          handlePointerUp(canvas, e.nativeEvent);
+        }}
+      />
     </div>
   );
 }
