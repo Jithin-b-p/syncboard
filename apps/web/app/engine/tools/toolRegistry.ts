@@ -1,4 +1,5 @@
 import { rectangleTool } from './rectangle.tool';
+import { selectionTool } from './selection.tool';
 import { Tool } from './tool.types';
 
 class ToolRegistry {
@@ -39,3 +40,4 @@ class ToolRegistry {
 export const toolRegistry = new ToolRegistry();
 
 toolRegistry.register('rectangle', rectangleTool);
+toolRegistry.register('selection', selectionTool);
