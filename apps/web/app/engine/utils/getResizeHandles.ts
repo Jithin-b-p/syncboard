@@ -12,7 +12,7 @@ export function getResizeHandles(element: BoardElement): Handle[] {
   const { x, y, width, height } = element;
 
   const centerX = x + width / 2;
-  const centerY = y + width / 2;
+  const centerY = y + height / 2;
 
   return [
     { type: 'nw', x, y },
@@ -22,6 +22,6 @@ export function getResizeHandles(element: BoardElement): Handle[] {
     { type: 'se', x: x + width, y: y + height },
     { type: 's', x: centerX, y: y + height },
     { type: 'sw', x, y: y + height },
-    { type: 'w', x, y: y + centerY },
+    { type: 'w', x, y: centerY },
   ];
 }
