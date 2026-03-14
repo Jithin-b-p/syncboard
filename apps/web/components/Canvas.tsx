@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { rendererBoard } from '../app/engine/rendering/canvasRenderer';
+import { renderBoard } from '../app/engine/rendering/canvasRenderer';
 import { useBoardStore } from '../app/engine/store/board.store';
 import {
   handlePointerDown,
@@ -12,6 +12,7 @@ import {
 export default function Canvas() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const elements = useBoardStore((state) => state.elements);
+  const selectedElementId = useBoardStore((state) => state.selectedElementId);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -35,7 +36,7 @@ export default function Canvas() {
 
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      rendererBoard(ctx, { width: rec.width, height: rec.height, elements });
+      renderBoard(ctx, { width: rec.width, height: rec.height, elements, selectedElementId });
     };
 
     canvasResize();
@@ -43,7 +44,7 @@ export default function Canvas() {
     window.addEventListener('resize', canvasResize);
 
     return () => window.removeEventListener('resize', canvasResize);
-  }, [elements]);
+  }, [elements, selectedElementId]);
   return (
     <div className="absolute inset-0">
       <canvas

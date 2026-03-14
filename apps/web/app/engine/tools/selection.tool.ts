@@ -17,7 +17,6 @@ export const selectionTool: Tool = {
       dragging = false;
       return;
     }
-
     selectedElement(element.id);
 
     dragOffsetX = event.x - element.x;
