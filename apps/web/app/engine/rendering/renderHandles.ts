@@ -13,7 +13,6 @@ export function renderResizeHandles(ctx: CanvasRenderingContext2D, element: Rect
   handles.forEach((handle) => {
     ctx.beginPath();
     ctx.rect(handle.x - HANDLE_SIZE / 2, handle.y - HANDLE_SIZE / 2, HANDLE_SIZE, HANDLE_SIZE);
-    ctx.fillText(handle.type, handle.x + 5, handle.y + 5);
     ctx.fill();
     ctx.stroke();
   });

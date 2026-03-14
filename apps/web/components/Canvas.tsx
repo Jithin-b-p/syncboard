@@ -44,7 +44,7 @@ export default function Canvas() {
     window.addEventListener('resize', canvasResize);
 
     return () => window.removeEventListener('resize', canvasResize);
-  }, [elements]);
+  }, [elements, selectedElementId]);
   return (
     <div className="absolute inset-0">
       <canvas
