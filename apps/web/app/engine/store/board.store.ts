@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { BoardElement } from '../models/element.types';
+import { ResizeHandles } from '../utils/getResizeHandles';
 
 export interface BoardState {
   elements: BoardElement[];
@@ -9,6 +10,11 @@ export interface BoardState {
   deleteElement: (id: string) => void;
   selectedElement: (id: string) => void;
   clearSelection: () => void;
+  isResizing: boolean;
+  activeResizeHandle: ResizeHandles | null;
+
+  setIsResizing: (value: boolean) => void;
+  setActiveResizeHandle: (handle: ResizeHandles | null) => void;
 }
 export const useBoardStore = create<BoardState>((set) => ({
   elements: [],
@@ -22,4 +28,13 @@ export const useBoardStore = create<BoardState>((set) => ({
     set((state) => ({ elements: state.elements.filter((el) => el.id !== id) })),
   selectedElement: (id) => set(() => ({ selectedElementId: id })),
   clearSelection: () => set(() => ({ selectedElementId: null })),
+  isResizing: false,
+  activeResizeHandle: null,
+
+  setIsResizing: (value) =>
+    set(() => ({
+      isResizing: value,
+    })),
+
+  setActiveResizeHandle: (value) => set(() => ({ activeResizeHandle: value })),
 }));
