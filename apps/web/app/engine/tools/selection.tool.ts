@@ -1,6 +1,7 @@
 import { useBoardStore } from '../store/board.store';
 import { hitTest } from '../utils/hitTest';
 import { hitTestHandles } from '../utils/hitTestHandles';
+import { resizeRectangle } from '../utils/resizeRectangle';
 import { Tool, ToolPointerEvent } from './tool.types';
 
 let dragging = false;
@@ -51,12 +52,23 @@ export const selectionTool: Tool = {
     dragging = false;
   },
   onPointerMove(event: ToolPointerEvent) {
-    if (!dragging) return;
-
-    const { selectedElementId, updateElement } = useBoardStore.getState();
+    const { selectedElementId, elements, isResizing, activeResizeHandle, updateElement } =
+      useBoardStore.getState();
 
     if (!selectedElementId) return;
 
+    const element = elements.find((el) => el.id === selectedElementId);
+
+    if (!element) return;
+
+    if (isResizing && activeResizeHandle) {
+      const updated = resizeRectangle(element, activeResizeHandle, event.x, event.y);
+
+      updateElement(selectedElementId, { ...updated, updatedAt: Date.now() });
+      return;
+    }
+
+    if (!dragging) return;
     const newX = event.x - dragOffsetX;
     const newY = event.y - dragOffsetY;
 
