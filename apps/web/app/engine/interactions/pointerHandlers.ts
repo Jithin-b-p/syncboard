@@ -2,8 +2,8 @@ import { toolRegistry } from '../tools/toolRegistry';
 
 export function getCanvasCoordinates(canvas: HTMLCanvasElement, event: PointerEvent) {
   const rect = canvas.getBoundingClientRect();
-  const x = event.clientX - rect.x;
-  const y = event.clientY - rect.y;
+  const x = event.clientX - rect.left;
+  const y = event.clientY - rect.top;
 
   return { x, y };
 }
