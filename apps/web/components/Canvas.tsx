@@ -8,6 +8,7 @@ import {
   handlePointerMove,
   handlePointerUp,
 } from '../app/engine/interactions/pointerHandlers';
+import { setCursor } from '../app/engine/cursor/cursorManager';
 
 export default function Canvas() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -58,6 +59,7 @@ export default function Canvas() {
         onPointerMove={(e) => {
           const canvas = canvasRef.current;
           if (!canvas) return;
+          setCursor(canvas, 'move');
           handlePointerMove(canvas, e.nativeEvent);
         }}
         onPointerUp={(e) => {
