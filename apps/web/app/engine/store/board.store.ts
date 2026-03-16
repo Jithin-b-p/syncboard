@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { BoardElement } from '../models/element.types';
 import { ResizeHandles } from '../utils/getResizeHandles';
+import { SelectionBox } from '../selection/selection.types';
 
 export interface BoardState {
   elements: BoardElement[];
@@ -12,9 +13,10 @@ export interface BoardState {
   clearSelection: () => void;
   isResizing: boolean;
   activeResizeHandle: ResizeHandles | null;
-
   setIsResizing: (value: boolean) => void;
   setActiveResizeHandle: (handle: ResizeHandles | null) => void;
+  selectionBox: SelectionBox | null;
+  setSelectionBox: (box: SelectionBox | null) => void;
 }
 export const useBoardStore = create<BoardState>((set) => ({
   elements: [],
@@ -37,4 +39,7 @@ export const useBoardStore = create<BoardState>((set) => ({
     })),
 
   setActiveResizeHandle: (value) => set(() => ({ activeResizeHandle: value })),
+
+  selectionBox: null,
+  setSelectionBox: (box) => set({ selectionBox: box }),
 }));
