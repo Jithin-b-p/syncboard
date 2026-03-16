@@ -1,3 +1,4 @@
+import { DRAG_THRESHOLD } from '../constants/editor.constants';
 import { createSelectionBox } from '../selection/selectionBox.utils';
 import { useBoardStore } from '../store/board.store';
 import { hitTest } from '../utils/hitTest';
@@ -12,6 +13,8 @@ let dragOffsetY = 0;
 let selecting = false;
 let selectionStartX = 0;
 let selectionStartY = 0;
+
+let pendingSelection = false;
 
 export const selectionTool: Tool = {
   onPointerDown(event: ToolPointerEvent) {
@@ -49,7 +52,8 @@ export const selectionTool: Tool = {
       return;
     }
 
-    selecting = true;
+    pendingSelection = true;
+
     selectionStartX = event.x;
     selectionStartY = event.y;
 
@@ -61,6 +65,7 @@ export const selectionTool: Tool = {
     setIsResizing(false);
     setActiveResizeHandle(null);
     setSelectionBox(null);
+    pendingSelection = false;
     selecting = false;
     dragging = false;
   },
@@ -84,6 +89,23 @@ export const selectionTool: Tool = {
       const updated = resizeRectangle(element, activeResizeHandle, event.x, event.y);
 
       updateElement(selectedElementId, { ...updated, updatedAt: Date.now() });
+      return;
+    }
+
+    if (pendingSelection) {
+      const dx = event.x - selectionStartX;
+      const dy = event.y - selectionStartY;
+
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance > DRAG_THRESHOLD) {
+        selecting = true;
+        pendingSelection = false;
+
+        const box = createSelectionBox(selectionStartX, selectionStartY, event.x, event.y);
+        setSelectionBox(box);
+      }
+
       return;
     }
 
