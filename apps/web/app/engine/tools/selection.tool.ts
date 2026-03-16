@@ -87,6 +87,8 @@ export const selectionTool: Tool = {
       if (distance > DRAG_THRESHOLD) {
         selecting = true;
         pendingSelection = false;
+        const box = createSelectionBox(selectionStartX, selectionStartY, event.x, event.y);
+        setSelectionBox(box);
       } else {
         return;
       }

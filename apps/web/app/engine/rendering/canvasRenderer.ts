@@ -1,4 +1,5 @@
 import { BoardElement } from '../models/element.types';
+import { SelectionBox } from '../selection/selection.types';
 import { useBoardStore } from '../store/board.store';
 import { renderElements } from './renderElements';
 import { renderResizeHandles } from './renderHandles';
@@ -10,6 +11,7 @@ export interface BoardState {
   height: number;
   elements: BoardElement[];
   selectedElementId: string | null;
+  selectionBox: SelectionBox | null;
 }
 
 export function renderBoard(ctx: CanvasRenderingContext2D, state: BoardState) {

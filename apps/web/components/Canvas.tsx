@@ -14,6 +14,7 @@ export default function Canvas() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const elements = useBoardStore((state) => state.elements);
   const selectedElementId = useBoardStore((state) => state.selectedElementId);
+  const selectionBox = useBoardStore((state) => state.selectionBox);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -37,7 +38,13 @@ export default function Canvas() {
 
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      renderBoard(ctx, { width: rec.width, height: rec.height, elements, selectedElementId });
+      renderBoard(ctx, {
+        width: rec.width,
+        height: rec.height,
+        elements,
+        selectedElementId,
+        selectionBox,
+      });
     };
 
     canvasResize();
