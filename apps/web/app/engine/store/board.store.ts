@@ -17,6 +17,8 @@ export interface BoardState {
   setActiveResizeHandle: (handle: ResizeHandles | null) => void;
   selectionBox: SelectionBox | null;
   setSelectionBox: (box: SelectionBox | null) => void;
+  selectedElementIds: Set<string>;
+  setSelectedElements: (ids: Set<string>) => void;
 }
 export const useBoardStore = create<BoardState>((set) => ({
   elements: [],
@@ -29,7 +31,7 @@ export const useBoardStore = create<BoardState>((set) => ({
   deleteElement: (id) =>
     set((state) => ({ elements: state.elements.filter((el) => el.id !== id) })),
   selectedElement: (id) => set(() => ({ selectedElementId: id })),
-  clearSelection: () => set(() => ({ selectedElementId: null })),
+  clearSelection: () => set(() => ({ selectedElementIds: new Set(), selectedElementId: null })),
   isResizing: false,
   activeResizeHandle: null,
 
@@ -42,4 +44,7 @@ export const useBoardStore = create<BoardState>((set) => ({
 
   selectionBox: null,
   setSelectionBox: (box) => set({ selectionBox: box }),
+
+  selectedElementIds: new Set(),
+  setSelectedElements: (ids) => set({ selectedElementIds: new Set(ids) }),
 }));
