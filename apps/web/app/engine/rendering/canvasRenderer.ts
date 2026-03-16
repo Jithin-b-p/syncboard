@@ -14,10 +14,11 @@ export interface BoardState {
 
 export function renderBoard(ctx: CanvasRenderingContext2D, state: BoardState) {
   const { width, height, elements, selectedElementId } = state;
+  const { selectionBox, selectedElementIds } = useBoardStore.getState();
 
   ctx.clearRect(0, 0, width, height);
 
-  renderElements(ctx, elements);
+  renderElements(ctx, elements, selectedElementIds);
 
   const selectedElement = elements.find((el) => el.id === selectedElementId);
 
@@ -26,7 +27,6 @@ export function renderBoard(ctx: CanvasRenderingContext2D, state: BoardState) {
     renderResizeHandles(ctx, selectedElement);
   }
 
-  const selectionBox = useBoardStore.getState().selectionBox;
   if (selectionBox) {
     renderSelectionBox(ctx, selectionBox);
   }

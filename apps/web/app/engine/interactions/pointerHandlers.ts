@@ -12,6 +12,7 @@ export function getCanvasCoordinates(canvas: HTMLCanvasElement, event: PointerEv
 }
 
 export function handlePointerDown(canvas: HTMLCanvasElement, event: PointerEvent) {
+  canvas.setPointerCapture(event.pointerId);
   const tool = toolRegistry.getActiveTool();
 
   const point = getCanvasCoordinates(canvas, event);
@@ -20,6 +21,7 @@ export function handlePointerDown(canvas: HTMLCanvasElement, event: PointerEvent
 }
 
 export function handlePointerUp(canvas: HTMLCanvasElement, event: PointerEvent) {
+  canvas.releasePointerCapture(event.pointerId);
   const tool = toolRegistry.getActiveTool();
 
   const point = getCanvasCoordinates(canvas, event);

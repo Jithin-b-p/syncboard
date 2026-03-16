@@ -7,8 +7,8 @@ export interface BoardState {
   elements: BoardElement[];
   selectedElementId: string | null;
   addElement: (element: BoardElement) => void;
-  updateElement: (id: string, updates: Partial<BoardElement>) => void;
-  deleteElement: (id: string) => void;
+  updateElement: (id: string | null, updates: Partial<BoardElement>) => void;
+  deleteElement: (id: string | null) => void;
   selectedElement: (id: string) => void;
   clearSelection: () => void;
   isResizing: boolean;

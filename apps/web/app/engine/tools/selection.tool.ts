@@ -1,4 +1,5 @@
 import { DRAG_THRESHOLD } from '../constants/editor.constants';
+import { getElementInsideSelection } from '../selection/selection.utils';
 import { createSelectionBox } from '../selection/selectionBox.utils';
 import { useBoardStore } from '../store/board.store';
 import { hitTest } from '../utils/hitTest';
@@ -25,7 +26,6 @@ export const selectionTool: Tool = {
       setIsResizing,
       setActiveResizeHandle,
       clearSelection,
-      setSelectionBox,
     } = useBoardStore.getState();
 
     const activeElement = elements.find((el) => el.id === selectedElementId);
@@ -51,14 +51,12 @@ export const selectionTool: Tool = {
       selecting = false;
       return;
     }
-
     pendingSelection = true;
 
     selectionStartX = event.x;
     selectionStartY = event.y;
 
     clearSelection();
-    setSelectionBox({ x: event.x, y: event.y, width: 0, height: 0 });
   },
   onPointerUp() {
     const { setIsResizing, setActiveResizeHandle, setSelectionBox } = useBoardStore.getState();
@@ -77,45 +75,48 @@ export const selectionTool: Tool = {
       activeResizeHandle,
       updateElement,
       setSelectionBox,
+      setSelectedElements,
     } = useBoardStore.getState();
 
-    if (!selectedElementId) return;
+    if (pendingSelection) {
+      const dx = event.x - selectionStartX;
+      const dy = event.y - selectionStartY;
 
-    const element = elements.find((el) => el.id === selectedElementId);
+      const distance = Math.hypot(dx, dy);
 
-    if (!element) return;
+      if (distance > DRAG_THRESHOLD) {
+        selecting = true;
+        pendingSelection = false;
+      } else {
+        return;
+      }
+    }
 
-    if (isResizing && activeResizeHandle) {
+    if (selecting) {
+      const box = createSelectionBox(selectionStartX, selectionStartY, event.x, event.y);
+      setSelectionBox(box);
+      const selected = getElementInsideSelection(elements, box);
+
+      setSelectedElements(selected);
+      return;
+    }
+
+    if (!selecting && isResizing && activeResizeHandle) {
+      const element = elements.find((el) => el.id === selectedElementId);
+      if (!element) return;
+
       const updated = resizeRectangle(element, activeResizeHandle, event.x, event.y);
 
       updateElement(selectedElementId, { ...updated, updatedAt: Date.now() });
       return;
     }
 
-    if (pendingSelection) {
-      const dx = event.x - selectionStartX;
-      const dy = event.y - selectionStartY;
+    if (!selecting) return;
+    if (!dragging || !selectedElementId) return;
 
-      const distance = Math.sqrt(dx * dx + dy * dy);
+    const element = elements.find((el) => el.id === selectedElementId);
+    if (!element) return;
 
-      if (distance > DRAG_THRESHOLD) {
-        selecting = true;
-        pendingSelection = false;
-
-        const box = createSelectionBox(selectionStartX, selectionStartY, event.x, event.y);
-        setSelectionBox(box);
-      }
-
-      return;
-    }
-
-    if (selecting) {
-      const box = createSelectionBox(selectionStartX, selectionStartY, event.x, event.y);
-      setSelectionBox(box);
-      return;
-    }
-
-    if (!dragging) return;
     const newX = event.x - dragOffsetX;
     const newY = event.y - dragOffsetY;
 
