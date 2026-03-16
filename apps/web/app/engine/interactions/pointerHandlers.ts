@@ -1,4 +1,5 @@
 import { toolRegistry } from '../tools/toolRegistry';
+import { detectHoverTarget } from './detectHoverTarget';
 
 export function getCanvasCoordinates(canvas: HTMLCanvasElement, event: PointerEvent) {
   const rect = canvas.getBoundingClientRect();
@@ -28,6 +29,8 @@ export function handlePointerMove(canvas: HTMLCanvasElement, event: PointerEvent
   const tool = toolRegistry.getActiveTool();
 
   const point = getCanvasCoordinates(canvas, event);
+
+  const hoverTarget = detectHoverTarget(point.x, point.y);
 
   tool.onPointerMove(point);
 }
