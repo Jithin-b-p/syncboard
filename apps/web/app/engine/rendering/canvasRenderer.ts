@@ -1,7 +1,9 @@
 import { BoardElement } from '../models/element.types';
+import { useBoardStore } from '../store/board.store';
 import { renderElements } from './renderElements';
 import { renderResizeHandles } from './renderHandles';
 import { renderSelectionOutline } from './renderSelection';
+import { renderSelectionBox } from './renderSelectionBox';
 
 export interface BoardState {
   width: number;
@@ -22,5 +24,10 @@ export function renderBoard(ctx: CanvasRenderingContext2D, state: BoardState) {
   if (selectedElement && selectedElement.type === 'rectangle') {
     renderSelectionOutline(ctx, selectedElement);
     renderResizeHandles(ctx, selectedElement);
+  }
+
+  const selectionBox = useBoardStore.getState().selectionBox;
+  if (selectionBox) {
+    renderSelectionBox(ctx, selectionBox);
   }
 }
