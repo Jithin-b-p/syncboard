@@ -1,3 +1,5 @@
+import { setCursor } from '../cursor/cursorManager';
+import { handleCursorMap } from '../cursor/handleCursorMap';
 import { toolRegistry } from '../tools/toolRegistry';
 import { detectHoverTarget } from './detectHoverTarget';
 
@@ -31,6 +33,20 @@ export function handlePointerMove(canvas: HTMLCanvasElement, event: PointerEvent
   const point = getCanvasCoordinates(canvas, event);
 
   const hoverTarget = detectHoverTarget(point.x, point.y);
+
+  switch (hoverTarget.type) {
+    case 'handle':
+      setCursor(canvas, handleCursorMap[hoverTarget.handle]);
+      break;
+
+    case 'element':
+      setCursor(canvas, 'move');
+      break;
+
+    case 'canvas':
+      setCursor(canvas, 'crosshair');
+      break;
+  }
 
   tool.onPointerMove(point);
 }
