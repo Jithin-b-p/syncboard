@@ -113,7 +113,6 @@ export const selectionTool: Tool = {
       return;
     }
 
-    if (!selecting) return;
     if (!dragging || !selectedElementId) return;
 
     const element = elements.find((el) => el.id === selectedElementId);

@@ -43,7 +43,6 @@ export default function Canvas() {
         height: rec.height,
         elements,
         selectedElementId,
-        selectionBox,
       });
     };
 
@@ -52,7 +51,7 @@ export default function Canvas() {
     window.addEventListener('resize', canvasResize);
 
     return () => window.removeEventListener('resize', canvasResize);
-  }, [elements, selectedElementId]);
+  }, [elements, selectedElementId, selectionBox]);
   return (
     <div className="absolute inset-0">
       <canvas

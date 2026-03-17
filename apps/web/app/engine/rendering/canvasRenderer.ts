@@ -11,7 +11,6 @@ export interface BoardState {
   height: number;
   elements: BoardElement[];
   selectedElementId: string | null;
-  selectionBox: SelectionBox | null;
 }
 
 export function renderBoard(ctx: CanvasRenderingContext2D, state: BoardState) {
@@ -30,6 +29,7 @@ export function renderBoard(ctx: CanvasRenderingContext2D, state: BoardState) {
   }
 
   if (selectionBox) {
+    console.log(selectionBox);
     renderSelectionBox(ctx, selectionBox);
   }
 }
