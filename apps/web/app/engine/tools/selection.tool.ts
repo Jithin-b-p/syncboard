@@ -21,38 +21,46 @@ export const selectionTool: Tool = {
   onPointerDown(event: ToolPointerEvent) {
     const {
       elements,
-      selectedElement,
-      selectedElementId,
+      selectedElementIds,
+      selectElement,
       setIsResizing,
       setActiveResizeHandle,
       clearSelection,
     } = useBoardStore.getState();
 
-    const activeElement = elements.find((el) => el.id === selectedElementId);
+    const selectedIds = Array.from(selectedElementIds);
 
-    if (activeElement) {
-      const handle = hitTestHandles(activeElement, event.x, event.y);
+    const activeId = selectedIds[0];
 
-      if (handle) {
-        setActiveResizeHandle(handle);
-        setIsResizing(true);
-        dragging = false;
-        return;
+    if (activeId) {
+      const activeElement = elements.find((el) => el.id === activeId);
+
+      if (activeElement) {
+        const handle = hitTestHandles(activeElement, event.x, event.y);
+
+        if (handle) {
+          setActiveResizeHandle(handle);
+          setIsResizing(true);
+          dragging = false;
+          return;
+        }
       }
     }
+
     const element = hitTest(elements, event);
 
     if (element) {
-      selectedElement(element.id);
+      selectElement(element.id);
       dragOffsetX = event.x - element.x;
       dragOffsetY = event.y - element.y;
 
       dragging = true;
       selecting = false;
+      pendingSelection = false;
       return;
     }
     pendingSelection = true;
-
+    selecting = false;
     selectionStartX = event.x;
     selectionStartY = event.y;
 
@@ -69,7 +77,7 @@ export const selectionTool: Tool = {
   },
   onPointerMove(event: ToolPointerEvent) {
     const {
-      selectedElementId,
+      selectedElementIds,
       elements,
       isResizing,
       activeResizeHandle,
@@ -87,8 +95,8 @@ export const selectionTool: Tool = {
       if (distance > DRAG_THRESHOLD) {
         selecting = true;
         pendingSelection = false;
-        const box = createSelectionBox(selectionStartX, selectionStartY, event.x, event.y);
-        setSelectionBox(box);
+        // const box = createSelectionBox(selectionStartX, selectionStartY, event.x, event.y);
+        // setSelectionBox(box);
       } else {
         return;
       }
@@ -103,24 +111,26 @@ export const selectionTool: Tool = {
       return;
     }
 
-    if (!selecting && isResizing && activeResizeHandle) {
-      const element = elements.find((el) => el.id === selectedElementId);
+    const selectedIds = Array.from(selectedElementIds);
+    const primaryId = selectedIds[0];
+    if (isResizing && activeResizeHandle && primaryId) {
+      const element = elements.find((el) => el.id === primaryId);
       if (!element) return;
 
       const updated = resizeRectangle(element, activeResizeHandle, event.x, event.y);
+      updateElement(primaryId, { ...updated, updatedAt: Date.now() });
 
-      updateElement(selectedElementId, { ...updated, updatedAt: Date.now() });
       return;
     }
 
-    if (!dragging || !selectedElementId) return;
+    if (!dragging || !primaryId) return;
 
-    const element = elements.find((el) => el.id === selectedElementId);
+    const element = elements.find((el) => el.id === primaryId);
     if (!element) return;
 
     const newX = event.x - dragOffsetX;
     const newY = event.y - dragOffsetY;
 
-    updateElement(selectedElementId, { x: newX, y: newY, updatedAt: Date.now() });
+    updateElement(primaryId, { x: newX, y: newY, updatedAt: Date.now() });
   },
 };

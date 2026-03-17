@@ -13,8 +13,8 @@ import { setCursor } from '../app/engine/cursor/cursorManager';
 export default function Canvas() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const elements = useBoardStore((state) => state.elements);
-  const selectedElementId = useBoardStore((state) => state.selectedElementId);
   const selectionBox = useBoardStore((state) => state.selectionBox);
+  const selectedElementIds = useBoardStore((state) => state.selectedElementIds);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -42,7 +42,8 @@ export default function Canvas() {
         width: rec.width,
         height: rec.height,
         elements,
-        selectedElementId,
+        selectedElementIds,
+        selectionBox,
       });
     };
 
@@ -51,7 +52,7 @@ export default function Canvas() {
     window.addEventListener('resize', canvasResize);
 
     return () => window.removeEventListener('resize', canvasResize);
-  }, [elements, selectedElementId, selectionBox]);
+  }, [elements, selectedElementIds, selectionBox]);
   return (
     <div className="absolute inset-0">
       <canvas

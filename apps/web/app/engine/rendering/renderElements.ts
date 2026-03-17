@@ -1,20 +1,11 @@
 import { BoardElement } from '../models/element.types';
-import { renderSelectionOutline } from './renderSelection';
 
-export function renderElements(
-  ctx: CanvasRenderingContext2D,
-  elements: BoardElement[],
-  selectedIds: Set<string>,
-) {
+export function renderElements(ctx: CanvasRenderingContext2D, elements: BoardElement[]) {
   elements.forEach((el) => {
     switch (el.type) {
       case 'rectangle':
         renderRectangle(ctx, el);
         break;
-    }
-
-    if (selectedIds.has(el.id)) {
-      renderSelectionOutline(ctx, el);
     }
   });
 }

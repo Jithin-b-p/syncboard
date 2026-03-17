@@ -5,11 +5,10 @@ import { SelectionBox } from '../selection/selection.types';
 
 export interface BoardState {
   elements: BoardElement[];
-  selectedElementId: string | null;
   addElement: (element: BoardElement) => void;
   updateElement: (id: string | null, updates: Partial<BoardElement>) => void;
   deleteElement: (id: string | null) => void;
-  selectedElement: (id: string) => void;
+  selectElement: (id: string) => void;
   clearSelection: () => void;
   isResizing: boolean;
   activeResizeHandle: ResizeHandles | null;
@@ -22,7 +21,6 @@ export interface BoardState {
 }
 export const useBoardStore = create<BoardState>((set) => ({
   elements: [],
-  selectedElementId: null,
   addElement: (element) => set((state) => ({ elements: [...state.elements, element] })),
   updateElement: (id, updates) =>
     set((state) => ({
@@ -30,8 +28,8 @@ export const useBoardStore = create<BoardState>((set) => ({
     })),
   deleteElement: (id) =>
     set((state) => ({ elements: state.elements.filter((el) => el.id !== id) })),
-  selectedElement: (id) => set(() => ({ selectedElementId: id })),
-  clearSelection: () => set(() => ({ selectedElementIds: new Set(), selectedElementId: null })),
+  selectElement: (id) => set(() => ({ selectedElementIds: new Set([id]) })),
+  clearSelection: () => set(() => ({ selectedElementIds: new Set() })),
   isResizing: false,
   activeResizeHandle: null,
 
