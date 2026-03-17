@@ -1,6 +1,5 @@
 import { BoardElement } from '../models/element.types';
 import { SelectionBox } from '../selection/selection.types';
-import { useBoardStore } from '../store/board.store';
 import { renderElements } from './renderElements';
 import { renderResizeHandles } from './renderHandles';
 import { renderSelectionOutline } from './renderSelection';

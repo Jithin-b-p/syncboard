@@ -8,8 +8,7 @@ import { resizeRectangle } from '../utils/resizeRectangle';
 import { Tool, ToolPointerEvent } from './tool.types';
 
 let dragging = false;
-let dragOffsetX = 0;
-let dragOffsetY = 0;
+let dragOffsets = new Map<string, { offsetX: number; offsetY: number }>();
 
 let selecting = false;
 let selectionStartX = 0;
@@ -50,10 +49,18 @@ export const selectionTool: Tool = {
     const element = hitTest(elements, event);
 
     if (element) {
-      selectElement(element.id);
-      dragOffsetX = event.x - element.x;
-      dragOffsetY = event.y - element.y;
+      const isAlreadySelected = selectedElementIds.has(element.id);
 
+      if (!isAlreadySelected) selectElement(element.id);
+      dragOffsets.clear();
+      const selectedIds = isAlreadySelected ? Array.from(selectedElementIds) : [element.id];
+
+      selectedIds.forEach((id) => {
+        const el = elements.find((el) => el.id === id);
+        if (!el) return;
+
+        dragOffsets.set(id, { offsetX: event.x - el.x, offsetY: event.y - el.y });
+      });
       dragging = true;
       selecting = false;
       pendingSelection = false;
@@ -74,6 +81,7 @@ export const selectionTool: Tool = {
     pendingSelection = false;
     selecting = false;
     dragging = false;
+    dragOffsets.clear();
   },
   onPointerMove(event: ToolPointerEvent) {
     const {
@@ -95,8 +103,6 @@ export const selectionTool: Tool = {
       if (distance > DRAG_THRESHOLD) {
         selecting = true;
         pendingSelection = false;
-        // const box = createSelectionBox(selectionStartX, selectionStartY, event.x, event.y);
-        // setSelectionBox(box);
       } else {
         return;
       }
@@ -123,14 +129,19 @@ export const selectionTool: Tool = {
       return;
     }
 
-    if (!dragging || !primaryId) return;
+    if (!dragging || selectedElementIds.size === 0) return;
 
-    const element = elements.find((el) => el.id === primaryId);
-    if (!element) return;
+    selectedElementIds.forEach((id) => {
+      const element = elements.find((el) => el.id === id);
+      if (!element) return;
 
-    const newX = event.x - dragOffsetX;
-    const newY = event.y - dragOffsetY;
+      const offSet = dragOffsets.get(id);
+      if (!offSet) return;
 
-    updateElement(primaryId, { x: newX, y: newY, updatedAt: Date.now() });
+      const newX = event.x - offSet.offsetX;
+      const newY = event.y - offSet.offsetY;
+
+      updateElement(id, { x: newX, y: newY, updatedAt: Date.now() });
+    });
   },
 };
