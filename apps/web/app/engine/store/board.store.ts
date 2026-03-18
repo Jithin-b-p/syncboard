@@ -3,7 +3,7 @@ import { BoardElement } from '../models/element.types';
 import { ResizeHandles } from '../utils/getResizeHandles';
 import { SelectionBox } from '../selection/selection.types';
 import { HistoryStore } from '../history/history.types';
-import { createInitialHistoryState, pushToHistory } from '../history/history.store';
+import { createInitialHistoryState, pushToHistory, redo, undo } from '../history/history.store';
 
 const initialState = {
   elements: [],
@@ -27,6 +27,8 @@ export interface BoardState {
   setSelectedElements: (ids: Set<string>) => void;
   history: HistoryStore;
   setPresent: (state: { elements: BoardElement[]; selectedElementIds: Set<string> }) => void;
+  undo: () => void;
+  redo: () => void;
 }
 export const useBoardStore = create<BoardState>((set) => ({
   elements: [],
@@ -76,4 +78,26 @@ export const useBoardStore = create<BoardState>((set) => ({
         selectedElementIds: newState.selectedElementIds,
       };
     }),
+
+  undo: () => {
+    set((state) => {
+      const newhistory = undo(state.history);
+
+      return {
+        history: newhistory,
+        elements: newhistory.present.elements,
+        selectedElementIds: newhistory.present.selectedElementsIds,
+      };
+    });
+  },
+  redo: () => {
+    set((state) => {
+      const newHistory = redo(state.history);
+      return {
+        history: newHistory,
+        elements: newHistory.present.elements,
+        selectedElementIds: newHistory.present.selectedElementsIds,
+      };
+    });
+  },
 }));
