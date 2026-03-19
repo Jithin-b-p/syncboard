@@ -4,6 +4,7 @@ import { ResizeHandles } from '../utils/getResizeHandles';
 import { SelectionBox } from '../selection/selection.types';
 import { HistoryStore } from '../history/history.types';
 import { createInitialHistoryState, pushToHistory, redo, undo } from '../history/history.store';
+import { Command } from '../commands/command.types';
 
 const initialState = {
   elements: [],
@@ -29,6 +30,7 @@ export interface BoardState {
   setPresent: (state: { elements: BoardElement[]; selectedElementIds: Set<string> }) => void;
   undo: () => void;
   redo: () => void;
+  executeCommand: (command: Command) => void;
 }
 export const useBoardStore = create<BoardState>((set) => ({
   elements: [],
@@ -99,5 +101,9 @@ export const useBoardStore = create<BoardState>((set) => ({
         selectedElementIds: newHistory.present.selectedElementsIds,
       };
     });
+  },
+
+  executeCommand: (command: Command) => {
+    command.execute();
   },
 }));
