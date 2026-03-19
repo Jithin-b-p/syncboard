@@ -9,6 +9,7 @@ import {
   handlePointerUp,
 } from '../app/engine/interactions/pointerHandlers';
 import { setCursor } from '../app/engine/cursor/cursorManager';
+import { handleKeyDown } from '../app/engine/keyboard/keyboardManager';
 
 export default function Canvas() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -50,8 +51,12 @@ export default function Canvas() {
     canvasResize();
 
     window.addEventListener('resize', canvasResize);
+    window.addEventListener('keydown', handleKeyDown);
 
-    return () => window.removeEventListener('resize', canvasResize);
+    return () => {
+      window.removeEventListener('resize', canvasResize);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
   }, [elements, selectedElementIds, selectionBox]);
   return (
     <div className="absolute inset-0">
