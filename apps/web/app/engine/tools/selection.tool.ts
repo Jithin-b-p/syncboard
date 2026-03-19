@@ -133,14 +133,14 @@ export const selectionTool: Tool = {
     if (!dragging || selectedElementIds.size === 0) return;
 
     const updatedElements = elements.map((el) => {
-      if (selectedElementIds.has(el.id)) return el;
+      if (!selectedElementIds.has(el.id)) return el;
       const offSet = dragOffsets.get(el.id);
 
       if (!offSet) return el;
       return {
         ...el,
-        x: offSet.offsetX,
-        y: offSet.offsetY,
+        x: event.x - offSet.offsetX,
+        y: event.y - offSet.offsetY,
         updatedAt: Date.now(),
       };
     });
