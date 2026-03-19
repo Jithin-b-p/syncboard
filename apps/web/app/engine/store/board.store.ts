@@ -3,12 +3,12 @@ import { BoardElement } from '../models/element.types';
 import { ResizeHandles } from '../utils/getResizeHandles';
 import { SelectionBox } from '../selection/selection.types';
 import { HistoryStore } from '../history/history.types';
-import { createInitialHistoryState, pushToHistory, redo, undo } from '../history/history.store';
+import { pushCommand, redo, undo } from '../history/history.store';
 import { Command } from '../commands/command.types';
 
 const initialState = {
-  elements: [],
-  selectedElementsIds: new Set<string>(),
+  past: [],
+  future: [],
 };
 
 export interface BoardState {
@@ -27,7 +27,6 @@ export interface BoardState {
   selectedElementIds: Set<string>;
   setSelectedElements: (ids: Set<string>) => void;
   history: HistoryStore;
-  setPresent: (state: { elements: BoardElement[]; selectedElementIds: Set<string> }) => void;
   undo: () => void;
   redo: () => void;
   executeCommand: (command: Command) => void;
@@ -40,12 +39,8 @@ export const useBoardStore = create<BoardState>((set) => ({
       const updatedElements = state.elements.map((el) =>
         el.id === id ? { ...el, ...updates } : el,
       );
-      const newHistory = pushToHistory(state.history, {
-        elements: updatedElements,
-        selectedElementsIds: state.selectedElementIds,
-      });
 
-      return { elements: updatedElements, history: newHistory };
+      return { elements: updatedElements };
     }),
   deleteElement: (id) =>
     set((state) => ({ elements: state.elements.filter((el) => el.id !== id) })),
@@ -66,29 +61,13 @@ export const useBoardStore = create<BoardState>((set) => ({
 
   selectedElementIds: new Set(),
   setSelectedElements: (ids) => set({ selectedElementIds: new Set(ids) }),
-  history: createInitialHistoryState(initialState),
-  setPresent: (newState) =>
-    set((state) => {
-      const newHistory = pushToHistory(state.history, {
-        elements: newState.elements,
-        selectedElementsIds: newState.selectedElementIds,
-      });
-
-      return {
-        history: newHistory,
-        elements: newState.elements,
-        selectedElementIds: newState.selectedElementIds,
-      };
-    }),
-
+  history: initialState,
   undo: () => {
     set((state) => {
       const newhistory = undo(state.history);
 
       return {
         history: newhistory,
-        elements: newhistory.present.elements,
-        selectedElementIds: newhistory.present.selectedElementsIds,
       };
     });
   },
@@ -97,13 +76,15 @@ export const useBoardStore = create<BoardState>((set) => ({
       const newHistory = redo(state.history);
       return {
         history: newHistory,
-        elements: newHistory.present.elements,
-        selectedElementIds: newHistory.present.selectedElementsIds,
       };
     });
   },
 
-  executeCommand: (command: Command) => {
-    command.execute();
-  },
+  executeCommand: (command: Command) =>
+    set((state) => {
+      command.execute();
+      const newHistory = pushCommand(state.history, command);
+
+      return { history: newHistory };
+    }),
 }));

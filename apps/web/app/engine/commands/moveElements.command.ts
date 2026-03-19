@@ -13,11 +13,11 @@ export class MoveElementsCommand implements Command {
   }
 
   execute() {
-    const { setPresent, selectedElementIds } = useBoardStore.getState();
-    setPresent({ elements: this.newElements, selectedElementIds });
+    const { selectedElementIds } = useBoardStore.getState();
+
+    useBoardStore.setState({ elements: this.newElements, selectedElementIds });
   }
   undo() {
-    const { setPresent, selectedElementIds } = useBoardStore.getState();
-    setPresent({ elements: this.previousElements, selectedElementIds });
+    useBoardStore.setState({ elements: this.previousElements });
   }
 }

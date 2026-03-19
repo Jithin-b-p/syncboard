@@ -1,3 +1,4 @@
+import { Command } from '../commands/command.types';
 import { BoardElement } from '../models/element.types';
 
 export interface HistoryState {
@@ -6,7 +7,6 @@ export interface HistoryState {
 }
 
 export interface HistoryStore {
-  past: HistoryState[];
-  present: HistoryState;
-  future: HistoryState[];
+  past: Command[];
+  future: Command[];
 }
