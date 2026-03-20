@@ -23,7 +23,8 @@ export class DuplicateElementsCommand implements Command {
   }
 
   execute() {
-    useBoardStore.setState({ elements: this.newElements });
+    const newIds = new Set(this.newElements.slice(this.previousElements.length).map((el) => el.id));
+    useBoardStore.setState({ elements: this.newElements, selectedElementIds: newIds });
   }
   undo() {
     useBoardStore.setState({ elements: this.previousElements });
