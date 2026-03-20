@@ -1,3 +1,4 @@
+import { MoveElementsCommand } from '../commands/moveElements.command';
 import { DRAG_THRESHOLD } from '../constants/editor.constants';
 import { getElementInsideSelection } from '../selection/selection.utils';
 import { createSelectionBox } from '../selection/selectionBox.utils';
@@ -131,17 +132,20 @@ export const selectionTool: Tool = {
 
     if (!dragging || selectedElementIds.size === 0) return;
 
-    selectedElementIds.forEach((id) => {
-      const element = elements.find((el) => el.id === id);
-      if (!element) return;
+    const updatedElements = elements.map((el) => {
+      if (!selectedElementIds.has(el.id)) return el;
+      const offSet = dragOffsets.get(el.id);
 
-      const offSet = dragOffsets.get(id);
-      if (!offSet) return;
-
-      const newX = event.x - offSet.offsetX;
-      const newY = event.y - offSet.offsetY;
-
-      updateElement(id, { x: newX, y: newY, updatedAt: Date.now() });
+      if (!offSet) return el;
+      return {
+        ...el,
+        x: event.x - offSet.offsetX,
+        y: event.y - offSet.offsetY,
+        updatedAt: Date.now(),
+      };
     });
+
+    const command = new MoveElementsCommand(updatedElements);
+    useBoardStore.getState().executeCommand(command);
   },
 };
